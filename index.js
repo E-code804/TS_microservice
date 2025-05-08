@@ -27,14 +27,15 @@ app.get("/api/:date?", (req, res) => {
   const date = req.params.date;
 
   if (!date) {
+    const currTime = new Date();
     return res.json({
-      unix: "",
-      utc: "",
+      unix: currTime.getTime(),
+      utc: currTime.toUTCString(),
     });
   }
-  const convertedDate = new Date(Number(date));
+  const convertedDate = /^\d+$/.test(date) ? new Date(Number(date)) : new Date(date);
 
-  if (!convertedDate.valueOf()) {
+  if (isNaN(convertedDate.getTime())) {
     return res.json({ error: "Invalid Date" });
   }
 
